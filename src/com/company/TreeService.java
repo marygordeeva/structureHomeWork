@@ -101,7 +101,7 @@ public class TreeService implements ITreeService {
     }
 
     @Override
-    public void PrintBinaryTreeWide() {
+    public void printBinaryTreeWide() {
         ArrayList<Integer> lists = new ArrayList<>();
 
         Queue<BinaryTreeNode> queue = new LinkedList<>();

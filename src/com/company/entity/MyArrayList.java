@@ -3,14 +3,13 @@ package com.company.entity;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Predicate;
 
 public class MyArrayList implements Collection<String>{
 
     private int cursor = 0;
     private int size = 0;
     private int defaultCapacity = 16;
-    transient String[] elements;
+    String[] elements;
 
     public MyArrayList(int capacity) {
         this.elements = new String[capacity];
@@ -21,23 +20,28 @@ public class MyArrayList implements Collection<String>{
     }
 
     @Override
+    public String toString(){
+        String out = "";
+        for(int i = 0; i< size(); i++){
+            out += " " + elements[i];
+        }
+        return out;
+    }
+
+    @Override
     public int size() {
         return size;
     }
 
     @Override
     public boolean isEmpty() {
-        if(size == 0){
-            return true;
-        }
-
-        return false;
+        return size ==0;
     }
 
     @Override
     public boolean contains(Object o) {
         for (int i=0; i < elements.length;i++ ){
-            if(elements[i] == o){
+            if(elements[i].equals(o)){
                 return true;
             }
         }
@@ -97,6 +101,7 @@ public class MyArrayList implements Collection<String>{
             if(elements[i] == o){
                 isExist = true;
                 index = i;
+                break;
             }
         }
 
@@ -109,7 +114,7 @@ public class MyArrayList implements Collection<String>{
                 elements,
                 index,
                 size -1);
-        size--;
+        size = size - 1;
 
         return true;
     }
@@ -164,12 +169,8 @@ public class MyArrayList implements Collection<String>{
                 elements,
                 size,
                 c.size());
+        size = size + c.size();
         return true;
-    }
-
-    @Override
-    public boolean removeIf(Predicate filter) {
-        return Collection.super.removeIf(filter);
     }
 
     @Override
@@ -181,24 +182,32 @@ public class MyArrayList implements Collection<String>{
         for (int i = 0; i < size; i++){
             elements[i] = null;
         }
+        size = 0;
     }
 
     @Override
     public boolean retainAll(Collection c) {
+        if(c.size() == 0){
+            return false;
+        }
+
         String[] arrRemove = (String[]) c.toArray();
-        boolean isFound = false;
-        for(int j = 0; j < size; j++){
-            if(arrRemove.length != 0){
-                for (int i = 0; i < arrRemove.length; i++){
-                    if(arrRemove[i] == elements[j]){
-                        isFound = true;
-                    }
-                }
-                if(!isFound){
-                    remove(elements[j]);
+        MyArrayList newArList = new MyArrayList();
+        for(int j = 0; j < size; j++) {
+            boolean isFound = false;
+            for (int i = 0; i < arrRemove.length; i++) {
+                if (arrRemove[i] == elements[j]) {
+                    isFound = true;
+                    break;
                 }
             }
+            if (isFound) {
+                newArList.add(elements[j]);
+            }
         }
+
+        elements = newArList.elements;
+        size = newArList.size;
 
         return true;
     }
@@ -207,9 +216,9 @@ public class MyArrayList implements Collection<String>{
     public boolean removeAll(Collection c) {
 
         String[] arrRemove = (String[]) c.toArray();
-        for (int i = 0; i < arrRemove.length; i++){
+        for (int i = 0; i < c.size(); i++) {
             remove(arrRemove[i]);
-            }
+        }
 
         return true;
     }

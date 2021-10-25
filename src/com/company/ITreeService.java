@@ -9,7 +9,7 @@ public interface ITreeService {
 
     void printTreeDeep();
 
-    void PrintBinaryTreeWide();
+    void printBinaryTreeWide();
 
     void delete(Integer deleteValue);
 }
