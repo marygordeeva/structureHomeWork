@@ -9,16 +9,14 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class TreeService implements ITreeService {
-
-
+public class Tree implements TreeOperations {
     BinaryTreeNode root;
 
     @Override
     public boolean insert(int value) {
         BinaryTreeNode newNode = new BinaryTreeNode(value);
         try {
-            if (InsertRoot(value, newNode)) {
+            if (insertRoot(value, newNode)) {
                 return true;
             }
 
@@ -129,7 +127,7 @@ public class TreeService implements ITreeService {
                 throw new TreeAppException("Tree is null!");
             }
 
-            BinaryTreeNodeWithParent existTreeNode = SearchTreeNodeWithParent(deleteValue);
+            BinaryTreeNodeWithParent existTreeNode = searchTreeNodeWithParent(deleteValue);
             BinaryTreeNode current = existTreeNode.getTreeNode();
             if (existTreeNode.isRightParent()) {
                 parentRight = existTreeNode.getParent();
@@ -138,13 +136,13 @@ public class TreeService implements ITreeService {
             }
 
             // 1. нет потомков
-            if (DeleteNodeNoChildren(parentLeft, parentRight, current)) {
+            if (deleteNodeNoChildren(parentLeft, parentRight, current)) {
                 System.out.println("Delete successful " + deleteValue);
                 return;
             }
 
             // 2. всего 1 потомок
-            if (DeleteTreeWithOneChildren(parentLeft, parentRight, current)) {
+            if (deleteTreeWithOneChildren(parentLeft, parentRight, current)) {
                 System.out.println("Delete successful for value " + deleteValue);
                 return;
             }
@@ -154,13 +152,13 @@ public class TreeService implements ITreeService {
             BinaryTreeNode rightChildren = current.getRight();
 
             //2.1 если у левого потомка нет правого потомка
-            if (DeleteNodeIfDontExistRightChildByLeftChild(parentLeft, parentRight, leftChildren, rightChildren)) {
+            if (deleteNodeIfDontExistRightChildByLeftChild(parentLeft, parentRight, leftChildren, rightChildren)) {
                 return;
             }
 
             //2.2 если у левого потомка есть правый потомок
             //find max по дереву leftChildren
-            var maxLeftChWithParent = GetMaxByBinaryTreeNode(leftChildren);
+            var maxLeftChWithParent = getMaxByBinaryTreeNode(leftChildren);
             BinaryTreeNode parent = maxLeftChWithParent.getParent();
             BinaryTreeNode treeNode = maxLeftChWithParent.getTreeNode();
 
@@ -196,7 +194,7 @@ public class TreeService implements ITreeService {
         }
     }
 
-    private boolean DeleteNodeIfDontExistRightChildByLeftChild(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode leftChildren, BinaryTreeNode rightChildren) {
+    private boolean deleteNodeIfDontExistRightChildByLeftChild(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode leftChildren, BinaryTreeNode rightChildren) {
         if(leftChildren.getRight() == null){
             if (parentLeft != null){
                 parentLeft.setLeft(leftChildren);
@@ -213,7 +211,7 @@ public class TreeService implements ITreeService {
         return false;
     }
 
-    private BinaryTreeNodeWithParent SearchTreeNodeWithParent(Integer searchValue) throws TreeAppException {
+    private BinaryTreeNodeWithParent searchTreeNodeWithParent(Integer searchValue) throws TreeAppException {
         //поиск элемента в дереве
         BinaryTreeNodeWithParent treeNodeWithParent = new BinaryTreeNodeWithParent(root);
         BinaryTreeNode parentLeft = null;
@@ -267,7 +265,7 @@ public class TreeService implements ITreeService {
         return current;
     }
 
-    private boolean InsertRoot(int value, BinaryTreeNode newNode) {
+    private boolean insertRoot(int value, BinaryTreeNode newNode) {
         if (root == null) {
             root = newNode;
             System.out.println("insert true for " + value);
@@ -276,7 +274,7 @@ public class TreeService implements ITreeService {
         return false;
     }
 
-    private BinaryTreeNodeWithParent GetMaxByBinaryTreeNode(BinaryTreeNode treeNode){
+    private BinaryTreeNodeWithParent getMaxByBinaryTreeNode(BinaryTreeNode treeNode){
         BinaryTreeNode current = treeNode;
         BinaryTreeNode next = null;
         BinaryTreeNode parent = treeNode;
@@ -291,7 +289,7 @@ public class TreeService implements ITreeService {
         return new BinaryTreeNodeWithParent(next, parent);
     }
 
-    private boolean DeleteTreeWithOneChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
+    private boolean deleteTreeWithOneChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
         if(current.getLeft() == null && current.getRight() != null
                 || current.getLeft() != null && current.getRight() == null){
 
@@ -319,7 +317,7 @@ public class TreeService implements ITreeService {
         return false;
     }
 
-    private boolean DeleteNodeNoChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
+    private boolean deleteNodeNoChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
         if(current.getRight() == null && current.getLeft() == null){
             if(parentLeft != null){
                 parentLeft.setLeft(null);

@@ -2,7 +2,7 @@ package com.company;
 
 import com.company.entity.BinaryTreeNode;
 
-public interface ITreeService {
+public interface TreeOperations {
     boolean insert(int value);
 
     BinaryTreeNode search(Integer searchValue);
