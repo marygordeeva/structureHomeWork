@@ -4,7 +4,6 @@ import java.util.*;
 
 public class MyArrayList implements List<String> {
 
-    private int cursor = 0;
     private int size = 0;
     private int DEFAULT_CAPACITY = 16;
     String[] elements;
@@ -52,6 +51,8 @@ public class MyArrayList implements List<String> {
     @Override
     public Iterator<String> iterator() {
         return new Iterator() {
+            private int cursor = 0;
+
             @Override
             public boolean hasNext() {
                 return cursor != size;
@@ -59,11 +60,9 @@ public class MyArrayList implements List<String> {
 
             @Override
             public Object next() {
-                if (cursor >= size) {
-                    return null;
-                }
+                String element = elements[cursor];
                 cursor++;
-                return elements[cursor - 1];
+                return element;
             }
         };
     }
@@ -85,7 +84,7 @@ public class MyArrayList implements List<String> {
             elements = grow();
         }
 
-        addInternal(str);
+        elements[size - 1] = str;
         return true;
     }
 
@@ -95,17 +94,9 @@ public class MyArrayList implements List<String> {
             return false;
         }
 
-        boolean isExist = false;
-        int index = 0;
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i] == o) {
-                isExist = true;
-                index = i;
-                break;
-            }
-        }
+        int index = indexOf(o);
 
-        if (!isExist) {
+        if (index == -1) {
             return false;
         }
 
@@ -184,17 +175,151 @@ public class MyArrayList implements List<String> {
 
     @Override
     public ListIterator<String> listIterator() {
-        return null;
+        return new ListIterator<>() {
+            int cursor = 0;
+            int sizeItr = size;
+            String[] elementsItr = elements;
+
+            @Override
+            public boolean hasNext() {
+                return cursor != sizeItr;
+            }
+
+            @Override
+            public String next() {
+                cursor++;
+                return elementsItr[cursor - 1];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return cursor - 1 > 0;
+            }
+
+            @Override
+            public String previous() {
+                cursor--;
+                return elementsItr[cursor];
+            }
+
+            @Override
+            public int nextIndex() {
+                if (cursor++ >= sizeItr) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public int previousIndex() {
+                if (cursor-- < 0) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public void remove() {
+                System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
+                sizeItr--;
+            }
+
+            @Override
+            public void set(String s) {
+                elementsItr[cursor] = s;
+            }
+
+            @Override
+            public void add(String s) {
+                elementsItr[sizeItr] = s;
+                sizeItr++;
+            }
+        };
     }
 
     @Override
     public ListIterator<String> listIterator(int index) {
-        return null;
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return new ListIterator<>() {
+            int cursor = index;
+            int sizeItr = size;
+            String[] elementsItr = elements;
+
+            @Override
+            public boolean hasNext() {
+                return cursor != sizeItr;
+            }
+
+            @Override
+            public String next() {
+                cursor++;
+                return elementsItr[cursor - 1];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return cursor - 1 > 0;
+            }
+
+            @Override
+            public String previous() {
+                cursor--;
+                return elementsItr[cursor];
+            }
+
+            @Override
+            public int nextIndex() {
+                if (cursor++ >= sizeItr) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public int previousIndex() {
+                if (cursor-- < 0) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public void remove() {
+                System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
+                sizeItr--;
+            }
+
+            @Override
+            public void set(String s) {
+                elementsItr[cursor] = s;
+            }
+
+            @Override
+            public void add(String s) {
+                elementsItr[sizeItr] = s;
+                sizeItr++;
+            }
+        };
     }
 
     @Override
     public List<String> subList(int fromIndex, int toIndex) {
-        return null;
+        String[] massive = new String[fromIndex - toIndex];
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException();
+        }
+        if (fromIndex == toIndex) {
+            return Arrays.asList(massive);
+        }
+
+        for (int i = 0; i < massive.length; i++) {
+            massive[i] = elements[fromIndex];
+            fromIndex++;
+        }
+
+        return Arrays.asList(massive);
     }
 
     @Override
@@ -236,15 +361,14 @@ public class MyArrayList implements List<String> {
                 size - index);
 
         System.arraycopy(arr2,
-                index,
+                0,
                 elements,
-                index + c.size(),
-                size - index);
+                index,
+                c.size());
 
         size = size + c.size();
         return true;
     }
-
 
     @Override
     public void clear() {
@@ -331,9 +455,5 @@ public class MyArrayList implements List<String> {
 
     private int getNewSize() {
         return size + size / 2;
-    }
-
-    private void addInternal(String str) {
-        elements[size - 1] = str;
     }
 }

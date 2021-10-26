@@ -1,10 +1,10 @@
 package com.company.entity;
 
 public class BinaryTreeNodeWithParent {
-     private BinaryTreeNode TreeNode;
-     private BinaryTreeNode Parent;
-     private boolean isLeftParent = false;
-     private boolean isRightParent = false;
+    private BinaryTreeNode TreeNode;
+    private BinaryTreeNode Parent;
+    private boolean isLeftParent = false;
+    private boolean isRightParent = false;
 
 
     public BinaryTreeNodeWithParent(BinaryTreeNode treeNode, BinaryTreeNode parent) {

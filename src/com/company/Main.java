@@ -3,6 +3,7 @@ package com.company;
 import com.company.entity.MyArrayList;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Main {
 
@@ -23,33 +24,34 @@ public class Main {
         System.out.println("______________________________________________");
         array1.add("4");
 
-        if(array1.isEmpty()){
+        if (array1.isEmpty()) {
             System.out.println("array1 is empty");
             System.out.println("______________________________________________");
         }
 
         MyArrayList arrayEmpty = new MyArrayList();
-        if(arrayEmpty.isEmpty()){
+        if (arrayEmpty.isEmpty()) {
             System.out.println("arrayEmpty is empty");
             System.out.println("______________________________________________");
         }
 
-        if(array1.contains("first")){
+        if (array1.contains("first")) {
             System.out.println("array1 contains 'first'");
             System.out.println("______________________________________________");
         }
 
         System.out.println("Out with next result: ");
-        while(array1.iterator().hasNext()){
-            System.out.print(" " + array1.iterator().next());
+        Iterator itr = array1.iterator();
+        while (itr.hasNext()) {
+            System.out.print(" " + itr.next());
         }
         System.out.println();
         System.out.println("______________________________________________");
 
         String[] arr = (String[]) array1.toArray();
         System.out.println("Out from array result: ");
-        for(int i = 0; i < arr.length; i++){
-            if(arr[i] != null){
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != null) {
                 System.out.print(" " + arr[i]);
             }
         }
@@ -112,7 +114,6 @@ public class Main {
         int indexLast = array3ContainsAll.lastIndexOf("80");
         System.out.println("result array3ContainsAll.lastIndexOf('80') = " + indexLast);
         System.out.println("______________________________________________");
-
 
     }
 

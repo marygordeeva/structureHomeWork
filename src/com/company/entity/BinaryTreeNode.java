@@ -20,7 +20,7 @@ public class BinaryTreeNode implements TreeOperations {
         this.right = right;
     }
 
-    public BinaryTreeNode(Integer value){
+    public BinaryTreeNode(Integer value) {
         this.value = value;
     }
 
@@ -87,7 +87,8 @@ public class BinaryTreeNode implements TreeOperations {
                 }
 
                 if (current == null) {
-                    return true;}
+                    return true;
+                }
             }
         } catch (TreeAppException | NullPointerException e) {
             System.out.println(e.getMessage());
@@ -96,7 +97,7 @@ public class BinaryTreeNode implements TreeOperations {
     }
 
     @Override
-    public BinaryTreeNode search(Integer searchValue){
+    public BinaryTreeNode search(Integer searchValue) {
         System.out.println("Start binary tree search");
         try {
             if (root == null) {
@@ -242,14 +243,14 @@ public class BinaryTreeNode implements TreeOperations {
     }
 
     private boolean deleteNodeIfDontExistRightChildByLeftChild(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode leftChildren, BinaryTreeNode rightChildren) {
-        if(leftChildren.getRight() == null){
-            if (parentLeft != null){
+        if (leftChildren.getRight() == null) {
+            if (parentLeft != null) {
                 parentLeft.setLeft(leftChildren);
                 leftChildren.setRight(rightChildren);
-            }else if(parentRight != null){
+            } else if (parentRight != null) {
                 parentRight.setRight(leftChildren);
                 leftChildren.setRight(rightChildren);
-            }else{
+            } else {
                 root = leftChildren;
                 leftChildren.setRight(rightChildren);
             }
@@ -279,10 +280,10 @@ public class BinaryTreeNode implements TreeOperations {
             }
         }
 
-        if(parentRight != null){
+        if (parentRight != null) {
             treeNodeWithParent.setParent(parentRight);
             treeNodeWithParent.setRightParent(true);
-        }else if (parentLeft != null){
+        } else if (parentLeft != null) {
             treeNodeWithParent.setParent(parentLeft);
             treeNodeWithParent.setLeftParent(true);
         }
@@ -321,12 +322,12 @@ public class BinaryTreeNode implements TreeOperations {
         return false;
     }
 
-    private BinaryTreeNodeWithParent getMaxByBinaryTreeNode(BinaryTreeNode treeNode){
+    private BinaryTreeNodeWithParent getMaxByBinaryTreeNode(BinaryTreeNode treeNode) {
         BinaryTreeNode current = treeNode;
         BinaryTreeNode next = null;
         BinaryTreeNode parent = treeNode;
 
-        while(current != null){
+        while (current != null) {
             parent = next;
             next = current;
 
@@ -337,25 +338,25 @@ public class BinaryTreeNode implements TreeOperations {
     }
 
     private boolean deleteTreeWithOneChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
-        if(current.getLeft() == null && current.getRight() != null
-                || current.getLeft() != null && current.getRight() == null){
+        if (current.getLeft() == null && current.getRight() != null
+                || current.getLeft() != null && current.getRight() == null) {
 
-            if(parentLeft != null){
-                if(current.getLeft() != null){
+            if (parentLeft != null) {
+                if (current.getLeft() != null) {
                     parentLeft.setLeft(current.getLeft());
-                }else{
+                } else {
                     parentLeft.setLeft(current.getRight());
                 }
-            }else if(parentRight != null){
-                if(current.getLeft() != null){
+            } else if (parentRight != null) {
+                if (current.getLeft() != null) {
                     parentRight.setRight(current.getLeft());
-                }else{
+                } else {
                     parentRight.setRight(current.getRight());
                 }
-            }else{
-                if(current.getLeft() != null){
+            } else {
+                if (current.getLeft() != null) {
                     root = current.getLeft();
-                }else{
+                } else {
                     root = current.getRight();
                 }
             }
@@ -365,10 +366,10 @@ public class BinaryTreeNode implements TreeOperations {
     }
 
     private boolean deleteNodeNoChildren(BinaryTreeNode parentLeft, BinaryTreeNode parentRight, BinaryTreeNode current) {
-        if(current.getRight() == null && current.getLeft() == null){
-            if(parentLeft != null){
+        if (current.getRight() == null && current.getLeft() == null) {
+            if (parentLeft != null) {
                 parentLeft.setLeft(null);
-            }else{
+            } else {
                 parentRight.setRight(null);
             }
             return true;
