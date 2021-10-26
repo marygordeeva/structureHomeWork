@@ -50,7 +50,7 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<String> iterator() {
         return new Iterator() {
             @Override
             public boolean hasNext() {
@@ -83,8 +83,6 @@ public class MyArrayList implements List<String> {
         ++size;
         if (size >= this.elements.length) {
             elements = grow();
-            addInternal(str);
-            return true;
         }
 
         addInternal(str);
@@ -262,12 +260,13 @@ public class MyArrayList implements List<String> {
 
     @Override
     public String get(int index) {
-        return null;
+        return elements[index];
     }
 
     @Override
     public String set(int index, String element) {
-        return null;
+        elements[index] = element;
+        return element;
     }
 
     @Override
