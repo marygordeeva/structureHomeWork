@@ -99,28 +99,24 @@ public class BinaryTreeNode implements TreeOperations {
     @Override
     public BinaryTreeNode search(Integer searchValue) {
         System.out.println("Start binary tree search");
-        try {
-            if (root == null) {
-                throw new TreeAppException("Tree is null!");
-            }
-            BinaryTreeNode current = root;
 
-            while (searchValue != current.getValue()) {
-                if (searchValue > current.getValue()) {
-                    current = current.getRight();
-                } else {
-                    current = current.getLeft();
-                }
-
-                if (current == null) {
-                    throw new TreeAppException("Value not found");
-                }
-            }
-            return current;
-        } catch (TreeAppException e) {
-            System.out.println(e.getMessage());
+        if (root == null) {
             return null;
         }
+        BinaryTreeNode current = root;
+
+        while (searchValue.equals(current.getValue()) ) {
+            if (searchValue > current.getValue()) {
+                current = current.getRight();
+            } else {
+                current = current.getLeft();
+            }
+
+            if (current == null) {
+                return null;
+            }
+        }
+        return current;
     }
 
     @Override
@@ -168,77 +164,76 @@ public class BinaryTreeNode implements TreeOperations {
     public void delete(Integer deleteValue) {
         BinaryTreeNode parentLeft = null;
         BinaryTreeNode parentRight = null;
-        try {
 
+        if (root == null) {
+            return;
+        }
 
-            if (root == null) {
-                throw new TreeAppException("Tree is null!");
+        BinaryTreeNodeWithParent existTreeNode = searchTreeNodeWithParent(deleteValue);
+
+        if(deleteValue == null){
+            return;
+        }
+        BinaryTreeNode current = existTreeNode.getTreeNode();
+        if (existTreeNode.isRightParent()) {
+            parentRight = existTreeNode.getParent();
+        } else {
+            parentLeft = existTreeNode.getParent();
+        }
+
+        // 1. нет потомков
+        if (deleteNodeNoChildren(parentLeft, parentRight, current)) {
+            System.out.println("Delete successful " + deleteValue);
+            return;
+        }
+
+        // 2. всего 1 потомок
+        if (deleteTreeWithOneChildren(parentLeft, parentRight, current)) {
+            System.out.println("Delete successful for value " + deleteValue);
+            return;
+        }
+
+        //2 потомка
+        BinaryTreeNode leftChildren = current.getLeft();
+        BinaryTreeNode rightChildren = current.getRight();
+
+        //2.1 если у левого потомка нет правого потомка
+        if (deleteNodeIfDontExistRightChildByLeftChild(parentLeft, parentRight, leftChildren, rightChildren)) {
+            return;
+        }
+
+        //2.2 если у левого потомка есть правый потомок
+        //find max по дереву leftChildren
+        var maxLeftChWithParent = getMaxByBinaryTreeNode(leftChildren);
+        BinaryTreeNode parent = maxLeftChWithParent.getParent();
+        BinaryTreeNode treeNode = maxLeftChWithParent.getTreeNode();
+
+        //если у наибольшего правого потомка нет левых потомков
+        if (treeNode.getLeft() == null) {
+            parent.setRight(null);
+            treeNode.setRight(rightChildren);
+            treeNode.setLeft(leftChildren);
+            if (parentRight != null) {
+                parentRight.setRight(treeNode);
+            } else if (parentLeft != null) {
+                parentLeft.setLeft(treeNode);
             }
 
-            BinaryTreeNodeWithParent existTreeNode = searchTreeNodeWithParent(deleteValue);
-            BinaryTreeNode current = existTreeNode.getTreeNode();
-            if (existTreeNode.isRightParent()) {
-                parentRight = existTreeNode.getParent();
-            } else {
-                parentLeft = existTreeNode.getParent();
-            }
-
-            // 1. нет потомков
-            if (deleteNodeNoChildren(parentLeft, parentRight, current)) {
-                System.out.println("Delete successful " + deleteValue);
-                return;
-            }
-
-            // 2. всего 1 потомок
-            if (deleteTreeWithOneChildren(parentLeft, parentRight, current)) {
-                System.out.println("Delete successful for value " + deleteValue);
-                return;
-            }
-
-            //2 потомка
-            BinaryTreeNode leftChildren = current.getLeft();
-            BinaryTreeNode rightChildren = current.getRight();
-
-            //2.1 если у левого потомка нет правого потомка
-            if (deleteNodeIfDontExistRightChildByLeftChild(parentLeft, parentRight, leftChildren, rightChildren)) {
-                return;
-            }
-
-            //2.2 если у левого потомка есть правый потомок
-            //find max по дереву leftChildren
-            var maxLeftChWithParent = getMaxByBinaryTreeNode(leftChildren);
-            BinaryTreeNode parent = maxLeftChWithParent.getParent();
-            BinaryTreeNode treeNode = maxLeftChWithParent.getTreeNode();
-
-            //если у наибольшего правого потомка нет левых потомков
-            if (treeNode.getLeft() == null) {
-                parent.setRight(null);
+        } else {
+            BinaryTreeNode leftMaxLeftCh = treeNode.getLeft();
+            parent.setRight(leftMaxLeftCh);
+            if (parentRight != null) {
+                parentRight.setRight(treeNode);
                 treeNode.setRight(rightChildren);
                 treeNode.setLeft(leftChildren);
-                if (parentRight != null) {
-                    parentRight.setRight(treeNode);
-                } else if (parentLeft != null) {
-                    parentLeft.setLeft(treeNode);
-                }
 
+            } else if (parentLeft != null) {
+                parentLeft.setLeft(treeNode);
             } else {
-                BinaryTreeNode leftMaxLeftCh = treeNode.getLeft();
-                parent.setRight(leftMaxLeftCh);
-                if (parentRight != null) {
-                    parentRight.setRight(treeNode);
-                    treeNode.setRight(rightChildren);
-                    treeNode.setLeft(leftChildren);
-
-                } else if (parentLeft != null) {
-                    parentLeft.setLeft(treeNode);
-                } else {
-                    treeNode.setRight(rightChildren);
-                    treeNode.setLeft(leftChildren);
-                    root = treeNode;
-                }
+                treeNode.setRight(rightChildren);
+                treeNode.setLeft(leftChildren);
+                root = treeNode;
             }
-        } catch (TreeAppException e) {
-            System.out.println(e.getMessage());
         }
     }
 
@@ -259,12 +254,12 @@ public class BinaryTreeNode implements TreeOperations {
         return false;
     }
 
-    private BinaryTreeNodeWithParent searchTreeNodeWithParent(Integer searchValue) throws TreeAppException {
+    private BinaryTreeNodeWithParent searchTreeNodeWithParent(Integer searchValue){
         //поиск элемента в дереве
         BinaryTreeNodeWithParent treeNodeWithParent = new BinaryTreeNodeWithParent(root);
         BinaryTreeNode parentLeft = null;
         BinaryTreeNode parentRight = null;
-        while (searchValue != treeNodeWithParent.getTreeNode().getValue()) {
+        while (searchValue.equals(treeNodeWithParent.getTreeNode().getValue())) {
             parentLeft = null;
             parentRight = null;
             if (searchValue > treeNodeWithParent.getTreeNode().getValue()) {
@@ -276,7 +271,7 @@ public class BinaryTreeNode implements TreeOperations {
             }
 
             if (treeNodeWithParent.getTreeNode() == null) {
-                throw new TreeAppException("Value not found");
+                return null;
             }
         }
 
