@@ -182,18 +182,26 @@ public class MyArrayList implements List<String> {
 
             @Override
             public boolean hasNext() {
-                return cursor != sizeItr;
+                return cursor < sizeItr - 1;
             }
 
             @Override
             public String next() {
-                cursor++;
-                return elementsItr[cursor - 1];
+                int nextCursor = cursor;
+                nextCursor++;
+
+                if(nextCursor < size){
+                    cursor++;
+                    return elementsItr[cursor - 1];
+                }
+
+                cursor = nextCursor - 1;
+                return elementsItr[cursor];
             }
 
             @Override
             public boolean hasPrevious() {
-                return cursor - 1 > 0;
+                return cursor > 0;
             }
 
             @Override
@@ -204,28 +212,37 @@ public class MyArrayList implements List<String> {
 
             @Override
             public int nextIndex() {
-                if (cursor++ >= sizeItr) {
+                int nextIndex = cursor + 1;
+                if (nextIndex >= sizeItr) {
                     throw new ArrayIndexOutOfBoundsException();
                 }
-                return cursor;
+                return nextIndex;
             }
 
             @Override
             public int previousIndex() {
-                if (cursor-- < 0) {
+                int preIndex = cursor -1;
+                if (preIndex < 0) {
                     throw new ArrayIndexOutOfBoundsException();
                 }
-                return cursor;
+                return preIndex;
             }
 
             @Override
             public void remove() {
-                System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
+                System.arraycopy(elementsItr,
+                        cursor + 1,
+                        elementsItr,
+                        cursor,
+                        sizeItr - cursor);
                 sizeItr--;
             }
 
             @Override
             public void set(String s) {
+                if(cursor  == sizeItr){
+                    cursor--;
+                }
                 elementsItr[cursor] = s;
             }
 
@@ -306,7 +323,7 @@ public class MyArrayList implements List<String> {
 
     @Override
     public List<String> subList(int fromIndex, int toIndex) {
-        String[] massive = new String[fromIndex - toIndex];
+        String[] massive = new String[toIndex - fromIndex];
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException();
         }
