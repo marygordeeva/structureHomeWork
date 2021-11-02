@@ -182,73 +182,50 @@ public class MyArrayList implements List<String> {
 
             @Override
             public boolean hasNext() {
-                return cursor < sizeItr - 1;
+                return cursor != sizeItr;
             }
 
             @Override
             public String next() {
-                int nextCursor = cursor;
-                nextCursor++;
-
-                if(nextCursor < sizeItr){
-                    cursor++;
-                    return elementsItr[cursor - 1];
-                }else{
-                    return elementsItr[cursor];
-                }
+                cursor++;
+                return elementsItr[cursor - 1];
             }
 
             @Override
             public boolean hasPrevious() {
-                return cursor > 0;
+                return cursor - 1 > 0;
             }
 
             @Override
             public String previous() {
-                int prevCursor = cursor;
-                prevCursor--;
-
-                if(prevCursor <= 0){
-                    prevCursor = 0;
-                }
-
-                cursor = prevCursor;
+                cursor--;
                 return elementsItr[cursor];
             }
 
             @Override
             public int nextIndex() {
-                int nextIndex = cursor + 1;
-                if (nextIndex >= sizeItr) {
+                if (cursor++ >= sizeItr) {
                     throw new ArrayIndexOutOfBoundsException();
                 }
-                return nextIndex;
+                return cursor;
             }
 
             @Override
             public int previousIndex() {
-                int preIndex = cursor -1;
-                if (preIndex < 0) {
+                if (cursor-- < 0) {
                     throw new ArrayIndexOutOfBoundsException();
                 }
-                return preIndex;
+                return cursor;
             }
 
             @Override
             public void remove() {
-                System.arraycopy(elementsItr,
-                        cursor + 1,
-                        elementsItr,
-                        cursor,
-                        sizeItr - cursor);
+                System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
                 sizeItr--;
             }
 
             @Override
             public void set(String s) {
-                if(cursor  == sizeItr){
-                    cursor--;
-                }
                 elementsItr[cursor] = s;
             }
 
@@ -329,7 +306,7 @@ public class MyArrayList implements List<String> {
 
     @Override
     public List<String> subList(int fromIndex, int toIndex) {
-        String[] massive = new String[toIndex - fromIndex];
+        String[] massive = new String[fromIndex - toIndex];
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException();
         }
@@ -412,9 +389,6 @@ public class MyArrayList implements List<String> {
 
     @Override
     public String set(int index, String element) {
-        if(index > size - 1){
-            throw new ArrayIndexOutOfBoundsException("Meaning out of scope");
-        }
         elements[index] = element;
         return element;
     }
@@ -448,10 +422,6 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean removeAll(Collection c) {
-        if (c.size() == 0) {
-            return false;
-        }
-
         String[] arrRemove = (String[]) c.toArray();
         for (int i = 0; i < c.size(); i++) {
             remove(arrRemove[i]);
@@ -462,10 +432,6 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean containsAll(Collection c) {
-        if (c.size() == 0) {
-            return false;
-        }
-
         String[] arr = (String[]) c.toArray();
         for (String str : arr) {
             if (str == null) {
