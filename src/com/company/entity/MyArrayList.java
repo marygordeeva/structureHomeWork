@@ -190,13 +190,12 @@ public class MyArrayList implements List<String> {
                 int nextCursor = cursor;
                 nextCursor++;
 
-                if(nextCursor < size){
+                if(nextCursor < sizeItr){
                     cursor++;
                     return elementsItr[cursor - 1];
+                }else{
+                    return elementsItr[cursor];
                 }
-
-                cursor = nextCursor - 1;
-                return elementsItr[cursor];
             }
 
             @Override
@@ -206,7 +205,14 @@ public class MyArrayList implements List<String> {
 
             @Override
             public String previous() {
-                cursor--;
+                int prevCursor = cursor;
+                prevCursor--;
+
+                if(prevCursor <= 0){
+                    prevCursor = 0;
+                }
+
+                cursor = prevCursor;
                 return elementsItr[cursor];
             }
 
@@ -406,6 +412,9 @@ public class MyArrayList implements List<String> {
 
     @Override
     public String set(int index, String element) {
+        if(index > size - 1){
+            throw new ArrayIndexOutOfBoundsException("Meaning out of scope");
+        }
         elements[index] = element;
         return element;
     }
@@ -439,6 +448,10 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean removeAll(Collection c) {
+        if (c.size() == 0) {
+            return false;
+        }
+
         String[] arrRemove = (String[]) c.toArray();
         for (int i = 0; i < c.size(); i++) {
             remove(arrRemove[i]);
@@ -449,6 +462,10 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean containsAll(Collection c) {
+        if (c.size() == 0) {
+            return false;
+        }
+
         String[] arr = (String[]) c.toArray();
         for (String str : arr) {
             if (str == null) {
