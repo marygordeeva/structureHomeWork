@@ -1,359 +1,285 @@
 package com.company.tests;
 
 import com.company.entity.MyArrayList;
-import org.assertj.core.api.Assertions;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 public class MyArrayListTest {
 
-    MyArrayList myArrayList;
-    String element = "new string 2";
-    int elementsCount = 5;
-
-    @BeforeMethod
-    public void setUp() {
-        myArrayList = new MyArrayList();
-        addElements(elementsCount, myArrayList);
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        myArrayList = null;
-        element = null;
-    }
-
     @Test
-    public void add_newString_returnTrue() {
+    public void add_listIsNotEmpty_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(2, "string 1");
 
         boolean isAdded = myArrayList.add("new string");
-        String firstAdd = myArrayList.get(elementsCount);
 
-        Assertions.assertThat(firstAdd)
-                .isNotEmpty()
-                .isEqualTo("new string");
-        Assertions.assertThat(isAdded).isTrue();
+        assertThat(myArrayList).contains("new string");
+        assertThat(isAdded).isTrue();
+        assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
-    public void size_returnFive() {
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount);
+    public void size_listIsNotEmpty_returnCorrectSize() {
+        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+
+        assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
-    public void isEmpty_arrayListNotEmpty_returnFalse() {
-        Assertions.assertThat(myArrayList.isEmpty()).isFalse();
+    public void isEmpty_listIsNotEmpty_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(1, "string 1");
+
+        assertThat(myArrayList.isEmpty()).isFalse();
     }
 
     @Test
-    public void isEmpty_arrayListEmpty_returnTrue() {
-        MyArrayList myArList = new MyArrayList();
+    public void isEmpty_arrayListIsEmpty_returnTrue() {
+        MyArrayList myArrayList = new MyArrayList();
 
-        Assertions.assertThat(myArList.isEmpty()).isTrue();
+        assertThat(myArrayList.isEmpty()).isTrue();
     }
 
     @Test
-    public void contains_elementString_returnTrue () {
-        boolean isContains = myArrayList.contains(element);
+    public void contains_listIsNotEmpty_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(1, "string 1");
 
-        Assertions.assertThat(isContains).isTrue();
+        assertThat(myArrayList.contains("string 1")).isTrue();
     }
 
     @Test
-    public void contains_elementString_returnFalse () {
-        boolean isContains2 = myArrayList.contains("3");
+    public void contains_elementString_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(1, "string 1");
 
-        Assertions.assertThat(isContains2).isFalse();
+        assertThat(myArrayList.contains("1")).isFalse();
     }
 
     @Test
-    public void iterator_arrayList_returnTrue() {
-        myArrayList.add("string 1");
-        myArrayList.add("string 3");
+    public void iteratorNext_arrayList_returnCorrectComposition() {
+        MyArrayList myArrayList = getMyArrayList(3, "string 1");
 
-        Iterator<String> stringIterator = myArrayList.iterator();
-
-        for (int i = 0; i < elementsCount + 2; i++){
-            boolean isExistNext = stringIterator.hasNext();
-            Assertions.assertThat(isExistNext).isTrue();
-
-            String nextElement = stringIterator.next();
-            Assertions.assertThat(nextElement).isEqualTo(myArrayList.get(i));
-        }
+        assertThat(myArrayList.iterator()).containsOnly("string 1");
     }
 
     @Test
-    public void remove_elementString_returnTrue() {
-        boolean isRemove = myArrayList.remove(element);
+    public void remove_listIsNotEmptyAndContainsString_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(3, "string 1");
 
-        Assertions.assertThat(isRemove).isTrue();
-        Assertions.assertThat( myArrayList.size()).isEqualTo(elementsCount - 1);
+        boolean isRemove = myArrayList.remove("string 1");
+
+        assertThat(isRemove).isTrue();
+        assertThat(myArrayList.size()).isEqualTo(2);
     }
 
     @Test
-    public void remove_anotherElement_returnFalse() {
+    public void remove_listIsNotEmptyAndNotContainsString_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+
         boolean isRemove = myArrayList.remove("3");
 
-        Assertions.assertThat(isRemove).isFalse();
+        assertThat(isRemove).isFalse();
+        assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
-    public void indexOf_elementString_returnIndex0() {
-        int index = myArrayList.indexOf("new string 2");
+    public void indexOf_listIsNotEmptyAndString_returnCorrectIndex() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
 
-        Assertions.assertThat(index).isEqualTo(0);
+        assertThat(myArrayList.indexOf("new string 2")).isEqualTo(0);
     }
 
     @Test
-    public void indexOf_elementString_returnIndexNegativ() {
-        int index = myArrayList.indexOf("new");
+    public void indexOf_listIsNotEmptyAndNotContainsString_returnNotCorrectIndex() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
 
-        Assertions.assertThat(index).isEqualTo(-1);
+        assertThat(myArrayList.indexOf("new")).isEqualTo(-1);
     }
 
     @Test
-    public void lastIndexOf_elementString_returnIndex() {
-        int index = myArrayList.lastIndexOf("new string 2");
+    public void lastIndexOf_listIsNotEmptyAndString_returnCorrectIndex() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
 
-        Assertions.assertThat(index).isEqualTo(elementsCount - 1);
+        assertThat(myArrayList.lastIndexOf("new string 2")).isEqualTo(2);
     }
 
     @Test
-    public void listIteratorNext_returnNextElement() {
-        ListIterator<String> listIterator = myArrayList.listIterator();
+    public void listIterator_listIsNotEmpty_returnCorrectElementsValue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
 
-        for (int i = 0; i < elementsCount; i++) {
-            boolean isExistNext = listIterator.hasNext();
-
-            if(i == elementsCount - 1){
-                Assertions.assertThat(isExistNext).isFalse();
-            }else{
-                Assertions.assertThat(isExistNext).isTrue();
-                int nextIndex = listIterator.nextIndex();
-                Assertions.assertThat(nextIndex).isEqualTo(i + 1);
-            }
-
-            String nextElement = listIterator.next();
-            Assertions.assertThat(nextElement).isEqualTo(myArrayList.get(i));
-        }
+        assertThat(myArrayList.listIterator()).containsOnly("string 1");
     }
 
     @Test
-    public void listIteratorPrev_returnPrevElement(){
-        ListIterator<String> listIterator = myArrayList.listIterator();
-
-        while(listIterator.hasNext()){
-            listIterator.next();
-        }
-
-        for (int i = elementsCount - 1; i > -1; i--) {
-            boolean isExistPre = listIterator.hasPrevious();
-            if (i == 0) {
-                Assertions.assertThat(isExistPre).isFalse();
-                continue;
-            } else {
-                Assertions.assertThat(isExistPre).isTrue();
-                int preIndex = listIterator.previousIndex();
-                Assertions.assertThat(preIndex).isEqualTo(i - 1);
-            }
-
-            String preElement = listIterator.previous();
-            Assertions.assertThat(preElement).isEqualTo(myArrayList.get(i - 1));
-        }
-    }
-
-    @Test
-    public void listIteratorRemove() {
+    public void listIteratorRemove_listIsNotEmptyAndListIterator_returnListIteratorNotContainsRemoveString() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        myArrayList.add("1");
         ListIterator<String> listIterator = myArrayList.listIterator();
 
         listIterator.remove();
 
-        for (int i = 0; i < elementsCount - 1; i++) {
-            boolean isExistNext = listIterator.hasNext();
-
-            if(i == elementsCount ){
-                Assertions.assertThat(isExistNext).isFalse();
-            }
-
-            String nextElement = listIterator.next();
-            Assertions.assertThat(nextElement).isEqualTo(myArrayList.get(i));
-        }
+        assertThat(listIterator).containsOnly("new string 2");
     }
 
     @Test
-    public void listIteratorSet_elementStringNew() {
+    public void listIteratorSet_listIsNotEmptyAndListIterator_returnCorrectStringValue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         ListIterator<String> listIterator = myArrayList.listIterator();
         listIterator.next();
-        String oldValue = listIterator.previous();
 
         listIterator.set("new string 3");
 
         listIterator.next();
-        String newSetString = listIterator.previous();
-
-        Assertions.assertThat(oldValue).isNotEqualTo(newSetString);
+        assertThat("new string 3").isEqualTo(listIterator.previous());
     }
 
     @Test
-    public void listIteratorAdd_newValue() {
-        String nextElement;
+    public void listIteratorAdd_listIsNotEmptyAndListIterator_returnCorrectStringValue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         ListIterator<String> listIterator = myArrayList.listIterator();
 
         listIterator.add("newStringIterator");
 
-        for (int i = 0; i < elementsCount + 1; i++) {
-            boolean isExistNext = listIterator.hasNext();
-
-            if(isExistNext){
-                listIterator.next();
-                continue;
-            }
-
-            nextElement = listIterator.next();
-            Assertions.assertThat(nextElement).isEqualTo("newStringIterator");
-        }
+        assertThat("newStringIterator").isEqualTo(getLastElementListIterator(listIterator));
     }
 
     @Test
-    public void subList_forIndex2And6_returnList() {
-        myArrayList.add("string 1");
+    public void subList_forIndex2And4_returnCorrectList() {
+        MyArrayList myArrayList = getMyArrayList(6, "new string 2");
 
-        List<String> listElements = myArrayList.subList(2,6);
+        List<String> listElements = myArrayList.subList(2, 4);
 
-        Assertions.assertThat(listElements.size()).isEqualTo(4);
-        for (int i = 0; i < listElements.size(); i++){
-            String f = listElements.get(i);
-
-            if(i != listElements.size() - 1){
-                Assertions.assertThat(f).isEqualTo(element);
-                continue;
-            }
-
-            Assertions.assertThat(f).isEqualTo("string 1");
-        }
+        assertThat(listElements.size()).isEqualTo(2);
+        assertThat(listElements).containsOnly("new string 2");
     }
 
     @Test
-    public void addAll_newList_returnTrue() {
+    public void addAll_twoListIsNotEmpty_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(6, "new string 2");
         List<String> addAllList = getListAddAll();
 
         boolean isAdded = myArrayList.addAll(addAllList);
 
-        Assertions.assertThat(isAdded).isTrue();
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount + addAllList.size());
-        boolean isContainsAll = myArrayList.containsAll(addAllList);
-        Assertions.assertThat(isContainsAll).isTrue();
+        assertThat(isAdded).isTrue();
+        assertThat(myArrayList.size()).isEqualTo(10);
+        assertThat(myArrayList.containsAll(addAllList)).isTrue();
     }
 
     @Test
-    public void clear_arrayList() {
+    public void clear_arrayListIsNotEmpty_returnListIsEmpty() {
+        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+
         myArrayList.clear();
 
-        Assertions.assertThat(myArrayList.size()).isEqualTo(0);
+        assertThat(myArrayList).isEmpty();
     }
 
     @Test
-    public void get_lastIndex_returnLastValue() {
-        String elementGet = myArrayList.get(elementsCount - 1);
+    public void get_listIsNotEmptyAndIndex_returnCorrectStringValue() {
+        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
 
-        Assertions.assertThat(elementGet).isEqualTo(element);
+        assertThat(myArrayList.get(1)).isEqualTo("new string 2");
     }
 
     @Test
-    public void set_stringAndIndex2_returnUpdateValue() {
-        String elementSet = myArrayList.set(2, "new string 3");
+    public void set_listIsNotEmptyAndValueAndIndex_returnCorrectStringValue() {
+        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
 
-        Assertions.assertThat(elementSet).isEqualTo("new string 3");
+        assertThat(myArrayList.set(1, "new string 3")).isEqualTo("new string 3");
     }
 
     @Test
-    public void set_stringAndIndexOut_returnThrow() {
-        Assertions.assertThatThrownBy(() -> myArrayList.set(10, "new string 3"))
+    public void set_listIsNotEmptyAndValueAndIndexOut_returnThrow() {
+        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+
+        assertThatThrownBy(() -> myArrayList.set(10, "new string 3"))
                 .hasMessageStartingWith("Meaning");
     }
 
     @Test
-    public void retainAll_list_returnTrue() {
+    public void retainAll_twoListIsNotEmpty_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         myArrayList.add("1");
 
         boolean isRetainAll = myArrayList.retainAll(getListRemoveAll());
 
-        Assertions.assertThat(isRetainAll).isTrue();
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount);
+        assertThat(isRetainAll).isTrue();
+        assertThat(myArrayList.size()).isEqualTo(3);
+        assertThat(myArrayList).containsOnly("new string 2");
     }
 
     @Test
-    public void retainAll_emptyList_returnFalse() {
-        myArrayList.add("1");
+    public void retainAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         List<String> addAllEmptyList = new MyArrayList();
 
-        boolean isRetainAll = myArrayList.retainAll(addAllEmptyList);
-
-        Assertions.assertThat(isRetainAll).isFalse();
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount + 1);
+        assertThat(myArrayList.retainAll(addAllEmptyList)).isFalse();
+        assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
-    public void removeAll_list_returnTrue() {
+    public void removeAll_twoListIsNotEmpty_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         myArrayList.add("removeAllList");
         List<String> removeList = getListRemoveAll();
 
-        boolean isRemoveAll = myArrayList.removeAll(removeList);
-
-        Assertions.assertThat(isRemoveAll).isTrue();
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount - 2);
+        assertThat(myArrayList.removeAll(removeList)).isTrue();
+        assertThat(myArrayList.size()).isEqualTo(1);
     }
 
     @Test
-    public void removeAll_emptyList_returnFalse() {
-        myArrayList.add("removeAllList");
+    public void removeAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         List<String> removeList = new MyArrayList();
 
         boolean isRemoveAll = myArrayList.removeAll(removeList);
 
-        Assertions.assertThat(isRemoveAll).isFalse();
-        Assertions.assertThat(myArrayList.size()).isEqualTo(elementsCount + 1);
+        assertThat(isRemoveAll).isFalse();
+        assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
-    public void containsAll_list_returnTrue() {
+    public void containsAll_twoListIsNotEmptyWithContains_returnTrue() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         List<String> listContains = getListAddAll();
         myArrayList.addAll(listContains);
 
-        boolean isContains = myArrayList.containsAll(listContains);
-
-        Assertions.assertThat(isContains).isTrue();
+        assertThat(myArrayList.containsAll(listContains)).isTrue();
     }
 
     @Test
-    public void containsAll_anotherList_returnFalse() {
+    public void containsAll_twoListIsNotEmptyNotContains_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
         List<String> listNotContains = new MyArrayList();
         listNotContains.add("6");
         listNotContains.add("3");
 
-        boolean isNotContains = myArrayList.containsAll(listNotContains);
-
-        Assertions.assertThat(isNotContains).isFalse();
+        assertThat(myArrayList.containsAll(listNotContains)).isFalse();
     }
 
     @Test
-    public void containsAll_emptyList_returnFalse() {
-        List<String> listNotContains = new MyArrayList();
+    public void containsAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
+        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        List<String> listEmpty = new MyArrayList();
 
-        boolean isNotContains = myArrayList.containsAll(listNotContains);
-
-        Assertions.assertThat(isNotContains).isFalse();
+        assertThat( myArrayList.containsAll(listEmpty)).isFalse();
     }
 
-    private void addElements(int elementsCount, MyArrayList listAdded) {
-        for (int i = 0; i < elementsCount; i++){
-            listAdded.add(element);
+    private String getLastElementListIterator(ListIterator listIterator){
+        String lastElement = null;
+        while(listIterator.hasNext()){
+            lastElement = (String) listIterator.next();
         }
+        return lastElement;
+    }
+
+    private MyArrayList getMyArrayList(int elementsCount, String element) {
+        MyArrayList myArrayList = new MyArrayList();
+        for (int i = 0; i < elementsCount; i++) {
+            myArrayList.add(element);
+        }
+
+        return myArrayList;
     }
 
     private List<String> getListAddAll() {
