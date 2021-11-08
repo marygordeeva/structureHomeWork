@@ -2,18 +2,18 @@ package com.company.entity;
 
 import java.util.*;
 
-public class MyArrayList<T> implements List<T> {
+public class MyArrayList<E> implements List<E> {
 
     private int size = 0;
     private int DEFAULT_CAPACITY = 16;
-    Object[] elements;
+    E[] elements;
 
     public MyArrayList(int capacity) {
-        this.elements = new Object[capacity];
+        this.elements =(E[]) new Object[capacity];
     }
 
     public MyArrayList() {
-        this.elements = new Object[DEFAULT_CAPACITY];
+        this.elements = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<E> iterator() {
         return new Iterator() {
             private int cursor = 0;
 
@@ -78,7 +78,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public boolean add(T element) {
+    public boolean add(E element) {
         ++size;
         if (size >= this.elements.length) {
             elements = grow();
@@ -112,7 +112,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public void add(int index, T element) {
+    public void add(int index, E element) {
         if (index > size || index < 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -132,7 +132,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public T remove(int index) {
+    public E remove(int index) {
 
         if (index > size || index < 0) {
             throw new ArrayIndexOutOfBoundsException();
@@ -146,7 +146,7 @@ public class MyArrayList<T> implements List<T> {
                 size - index);
 
         size = size - 1;
-        return (T) elementDelete;
+        return (E) elementDelete;
     }
 
     @Override
@@ -174,7 +174,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public ListIterator<T> listIterator() {
+    public ListIterator<E> listIterator() {
         return new ListIterator<>() {
             int cursor = 0;
             int sizeItr = size;
@@ -186,9 +186,9 @@ public class MyArrayList<T> implements List<T> {
             }
 
             @Override
-            public T next() {
+            public E next() {
                 cursor++;
-                return (T) elementsItr[cursor - 1];
+                return (E) elementsItr[cursor - 1];
             }
 
             @Override
@@ -197,9 +197,9 @@ public class MyArrayList<T> implements List<T> {
             }
 
             @Override
-            public T previous() {
+            public E previous() {
                 cursor--;
-                return (T) elementsItr[cursor];
+                return (E) elementsItr[cursor];
             }
 
             @Override
@@ -238,7 +238,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public ListIterator<T> listIterator(int index) {
+    public ListIterator<E> listIterator(int index) {
         if (index >= size) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -253,9 +253,9 @@ public class MyArrayList<T> implements List<T> {
             }
 
             @Override
-            public T next() {
+            public E next() {
                 cursor++;
-                return (T) elementsItr[cursor - 1];
+                return (E) elementsItr[cursor - 1];
             }
 
             @Override
@@ -264,9 +264,9 @@ public class MyArrayList<T> implements List<T> {
             }
 
             @Override
-            public T previous() {
+            public E previous() {
                 cursor--;
-                return (T) elementsItr[cursor];
+                return (E) elementsItr[cursor];
             }
 
             @Override
@@ -305,13 +305,13 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public List<T> subList(int fromIndex, int toIndex) {
+    public List<E> subList(int fromIndex, int toIndex) {
         Object[] massive = new Object[fromIndex - toIndex];
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException();
         }
         if (fromIndex == toIndex) {
-            return (List<T>) Arrays.asList(massive);
+            return (List<E>) Arrays.asList(massive);
         }
 
         for (int i = 0; i < massive.length; i++) {
@@ -319,11 +319,11 @@ public class MyArrayList<T> implements List<T> {
             fromIndex++;
         }
 
-        return (List<T>) Arrays.asList(massive);
+        return (List<E>) Arrays.asList(massive);
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends E> c) {
         if (c.isEmpty()) {
             return true;
         }
@@ -342,7 +342,7 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
+    public boolean addAll(int index, Collection<? extends E> c) {
         if (c.isEmpty()) {
             return true;
         }
@@ -380,12 +380,12 @@ public class MyArrayList<T> implements List<T> {
     }
 
     @Override
-    public T get(int index) {
-        return (T) elements[index];
+    public E get(int index) {
+        return (E) elements[index];
     }
 
     @Override
-    public T set(int index, T element) {
+    public E set(int index, E element) {
         elements[index] = element;
         return element;
     }
@@ -397,7 +397,7 @@ public class MyArrayList<T> implements List<T> {
         }
 
         Object[] arrRemove = c.toArray();
-        MyArrayList<T> newArList = new MyArrayList<T>();
+        MyArrayList<E> newArList = new MyArrayList<E>();
         for (int j = 0; j < size; j++) {
             boolean isFound = false;
             for (int i = 0; i < arrRemove.length; i++) {
@@ -407,7 +407,7 @@ public class MyArrayList<T> implements List<T> {
                 }
             }
             if (isFound) {
-                newArList.add((T) elements[j]);
+                newArList.add((E) elements[j]);
             }
         }
 
@@ -441,9 +441,9 @@ public class MyArrayList<T> implements List<T> {
         return true;
     }
 
-    private T[] grow() {
+    private E[] grow() {
         int newSize = getNewSize();
-        return (T[]) Arrays.copyOf(elements, newSize);
+        return (E[]) Arrays.copyOf(elements, newSize);
     }
 
     private Object[] grow(int newSize) {
