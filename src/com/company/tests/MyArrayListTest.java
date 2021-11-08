@@ -11,7 +11,7 @@ public class MyArrayListTest {
 
     @Test
     public void add_listIsNotEmpty_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(2, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(2, "string 1");
 
         boolean isAdded = myArrayList.add("new string");
 
@@ -22,49 +22,49 @@ public class MyArrayListTest {
 
     @Test
     public void size_listIsNotEmpty_returnCorrectSize() {
-        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "string 1");
 
         assertThat(myArrayList.size()).isEqualTo(3);
     }
 
     @Test
     public void isEmpty_listIsNotEmpty_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(1, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(1, "string 1");
 
         assertThat(myArrayList.isEmpty()).isFalse();
     }
 
     @Test
     public void isEmpty_arrayListIsEmpty_returnTrue() {
-        MyArrayList myArrayList = new MyArrayList();
+        MyArrayList<String> myArrayList = new MyArrayList();
 
         assertThat(myArrayList.isEmpty()).isTrue();
     }
 
     @Test
     public void contains_listIsNotEmpty_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(1, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(1, "string 1");
 
         assertThat(myArrayList.contains("string 1")).isTrue();
     }
 
     @Test
     public void contains_elementString_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(1, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(1, "string 1");
 
         assertThat(myArrayList.contains("1")).isFalse();
     }
 
     @Test
     public void iteratorNext_arrayList_returnCorrectComposition() {
-        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "string 1");
 
         assertThat(myArrayList.iterator()).containsOnly("string 1");
     }
 
     @Test
     public void remove_listIsNotEmptyAndContainsString_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "string 1");
 
         boolean isRemove = myArrayList.remove("string 1");
 
@@ -74,7 +74,7 @@ public class MyArrayListTest {
 
     @Test
     public void remove_listIsNotEmptyAndNotContainsString_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(3, "string 1");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "string 1");
 
         boolean isRemove = myArrayList.remove("3");
 
@@ -84,36 +84,36 @@ public class MyArrayListTest {
 
     @Test
     public void indexOf_listIsNotEmptyAndString_returnCorrectIndex() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
 
         assertThat(myArrayList.indexOf("new string 2")).isEqualTo(0);
     }
 
     @Test
     public void indexOf_listIsNotEmptyAndNotContainsString_returnNotCorrectIndex() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
 
         assertThat(myArrayList.indexOf("new")).isEqualTo(-1);
     }
 
     @Test
     public void lastIndexOf_listIsNotEmptyAndString_returnCorrectIndex() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
 
         assertThat(myArrayList.lastIndexOf("new string 2")).isEqualTo(2);
     }
 
     @Test
     public void listIterator_listIsNotEmpty_returnCorrectElementsValue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
 
-        assertThat(myArrayList.listIterator()).containsOnly("string 1");
+        assertThat(myArrayList.listIterator()).containsOnly("new string 2");
     }
 
     @Test
     public void listIteratorRemove_listIsNotEmptyAndListIterator_returnListIteratorNotContainsRemoveString() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
-        myArrayList.add("1");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
+        myArrayList.add(0, "1");
         ListIterator<String> listIterator = myArrayList.listIterator();
 
         listIterator.remove();
@@ -123,7 +123,7 @@ public class MyArrayListTest {
 
     @Test
     public void listIteratorSet_listIsNotEmptyAndListIterator_returnCorrectStringValue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         ListIterator<String> listIterator = myArrayList.listIterator();
         listIterator.next();
 
@@ -135,7 +135,7 @@ public class MyArrayListTest {
 
     @Test
     public void listIteratorAdd_listIsNotEmptyAndListIterator_returnCorrectStringValue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         ListIterator<String> listIterator = myArrayList.listIterator();
 
         listIterator.add("newStringIterator");
@@ -145,7 +145,7 @@ public class MyArrayListTest {
 
     @Test
     public void subList_forIndex2And4_returnCorrectList() {
-        MyArrayList myArrayList = getMyArrayList(6, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(6, "new string 2");
 
         List<String> listElements = myArrayList.subList(2, 4);
 
@@ -155,19 +155,19 @@ public class MyArrayListTest {
 
     @Test
     public void addAll_twoListIsNotEmpty_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(6, "new string 2");
-        List<String> addAllList = getListAddAll();
+        MyArrayList<String> myArrayList = getMyArrayList(6, "new string 2");
+        List<String> addAllList = getListAddAll("1", "2");
 
         boolean isAdded = myArrayList.addAll(addAllList);
 
         assertThat(isAdded).isTrue();
-        assertThat(myArrayList.size()).isEqualTo(10);
+        assertThat(myArrayList.size()).isEqualTo(8);
         assertThat(myArrayList.containsAll(addAllList)).isTrue();
     }
 
     @Test
     public void clear_arrayListIsNotEmpty_returnListIsEmpty() {
-        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(2, "new string 2");
 
         myArrayList.clear();
 
@@ -176,21 +176,21 @@ public class MyArrayListTest {
 
     @Test
     public void get_listIsNotEmptyAndIndex_returnCorrectStringValue() {
-        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(2, "new string 2");
 
         assertThat(myArrayList.get(1)).isEqualTo("new string 2");
     }
 
     @Test
     public void set_listIsNotEmptyAndValueAndIndex_returnCorrectStringValue() {
-        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(2, "new string 2");
 
         assertThat(myArrayList.set(1, "new string 3")).isEqualTo("new string 3");
     }
 
     @Test
     public void set_listIsNotEmptyAndValueAndIndexOut_returnThrow() {
-        MyArrayList myArrayList = getMyArrayList(2, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(2, "new string 2");
 
         assertThatThrownBy(() -> myArrayList.set(10, "new string 3"))
                 .hasMessageStartingWith("Meaning");
@@ -198,10 +198,10 @@ public class MyArrayListTest {
 
     @Test
     public void retainAll_twoListIsNotEmpty_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         myArrayList.add("1");
 
-        boolean isRetainAll = myArrayList.retainAll(getListRemoveAll());
+        boolean isRetainAll = myArrayList.retainAll(getListRemoveAll("new string 2", "1211", "11"));
 
         assertThat(isRetainAll).isTrue();
         assertThat(myArrayList.size()).isEqualTo(3);
@@ -210,7 +210,7 @@ public class MyArrayListTest {
 
     @Test
     public void retainAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         List<String> addAllEmptyList = new MyArrayList();
 
         assertThat(myArrayList.retainAll(addAllEmptyList)).isFalse();
@@ -219,9 +219,9 @@ public class MyArrayListTest {
 
     @Test
     public void removeAll_twoListIsNotEmpty_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         myArrayList.add("removeAllList");
-        List<String> removeList = getListRemoveAll();
+        List<String> removeList = getListRemoveAll("new string 2", "new string 2", "new string 2");
 
         assertThat(myArrayList.removeAll(removeList)).isTrue();
         assertThat(myArrayList.size()).isEqualTo(1);
@@ -229,7 +229,7 @@ public class MyArrayListTest {
 
     @Test
     public void removeAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         List<String> removeList = new MyArrayList();
 
         boolean isRemoveAll = myArrayList.removeAll(removeList);
@@ -240,8 +240,8 @@ public class MyArrayListTest {
 
     @Test
     public void containsAll_twoListIsNotEmptyWithContains_returnTrue() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
-        List<String> listContains = getListAddAll();
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
+        List<String> listContains = getListAddAll("1", "2");
         myArrayList.addAll(listContains);
 
         assertThat(myArrayList.containsAll(listContains)).isTrue();
@@ -249,7 +249,7 @@ public class MyArrayListTest {
 
     @Test
     public void containsAll_twoListIsNotEmptyNotContains_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
         List<String> listNotContains = new MyArrayList();
         listNotContains.add("6");
         listNotContains.add("3");
@@ -259,22 +259,22 @@ public class MyArrayListTest {
 
     @Test
     public void containsAll_listIsNotEmptyAndListIsEmpty_returnFalse() {
-        MyArrayList myArrayList = getMyArrayList(3, "new string 2");
-        List<String> listEmpty = new MyArrayList();
+        MyArrayList<String> myArrayList = getMyArrayList(3, "new string 2");
+        List<String> listEmpty = new MyArrayList<>();
 
         assertThat( myArrayList.containsAll(listEmpty)).isFalse();
     }
 
-    private String getLastElementListIterator(ListIterator listIterator){
-        String lastElement = null;
+    private <T> T getLastElementListIterator(ListIterator listIterator){
+        T lastElement = null;
         while(listIterator.hasNext()){
-            lastElement = (String) listIterator.next();
+            lastElement = (T) listIterator.next();
         }
         return lastElement;
     }
 
-    private MyArrayList getMyArrayList(int elementsCount, String element) {
-        MyArrayList myArrayList = new MyArrayList();
+    private <T> MyArrayList getMyArrayList(int elementsCount, T element) {
+        MyArrayList<T> myArrayList = new MyArrayList();
         for (int i = 0; i < elementsCount; i++) {
             myArrayList.add(element);
         }
@@ -282,20 +282,18 @@ public class MyArrayListTest {
         return myArrayList;
     }
 
-    private List<String> getListAddAll() {
-        List<String> addList = new MyArrayList();
-        addList.add("1");
-        addList.add("2");
-        addList.add("3");
-        addList.add("4");
+    private <T> List<T> getListAddAll(T element1, T element2) {
+        List<T> addList = new MyArrayList<>();
+        addList.add(element1);
+        addList.add(element2);
         return addList;
     }
 
-    private List<String> getListRemoveAll() {
-        List<String> removeList = new MyArrayList();
-        removeList.add("new string 2");
-        removeList.add("new string 2");
-        removeList.add("new string 2");
+    private <T> List<T> getListRemoveAll(T element1, T element2, T element3) {
+        List<T> removeList = new MyArrayList<>();
+        removeList.add(element1);
+        removeList.add(element2);
+        removeList.add(element3);
 
         return removeList;
     }

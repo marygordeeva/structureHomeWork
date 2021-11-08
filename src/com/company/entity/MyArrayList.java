@@ -220,6 +220,11 @@ public class MyArrayList<E> implements List<E> {
 
             @Override
             public void remove() {
+                if(cursor == 0){
+                    System.arraycopy(elementsItr, cursor + 1, elementsItr, 0, sizeItr - cursor - 1);
+                    sizeItr--;
+                    return;
+                }
                 System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
                 sizeItr--;
             }
@@ -306,7 +311,7 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        Object[] massive = new Object[fromIndex - toIndex];
+        Object[] massive = new Object[toIndex - fromIndex];
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException();
         }
@@ -332,7 +337,7 @@ public class MyArrayList<E> implements List<E> {
             grow(size + c.size() + 1);
         }
 
-        System.arraycopy(c,
+        System.arraycopy(c.toArray(),
                 0,
                 elements,
                 size,
@@ -386,6 +391,9 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public E set(int index, E element) {
+        if(index > size - 1){
+            throw new ArrayIndexOutOfBoundsException("Meaning out of scope");
+        }
         elements[index] = element;
         return element;
     }
@@ -419,6 +427,9 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean removeAll(Collection c) {
+        if(c.isEmpty()){
+            return false;
+        }
         Object[] arrRemove = c.toArray();
         for (int i = 0; i < c.size(); i++) {
             remove(arrRemove[i]);
@@ -429,6 +440,9 @@ public class MyArrayList<E> implements List<E> {
 
     @Override
     public boolean containsAll(Collection c) {
+        if(c.isEmpty()){
+            return false;
+        }
         Object[] arr = c.toArray();
         for (Object o : arr) {
             if (o == null) {
