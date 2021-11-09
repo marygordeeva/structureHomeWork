@@ -2,18 +2,18 @@ package com.company.entity;
 
 import java.util.*;
 
-public class MyArrayList implements List<String> {
+public class MyArrayList<E> implements List<E> {
 
     private int size = 0;
     private int DEFAULT_CAPACITY = 16;
-    String[] elements;
+    E[] elements;
 
     public MyArrayList(int capacity) {
-        this.elements = new String[capacity];
+        this.elements =(E[]) new Object[capacity];
     }
 
     public MyArrayList() {
-        this.elements = new String[DEFAULT_CAPACITY];
+        this.elements = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public Iterator<String> iterator() {
+    public Iterator<E> iterator() {
         return new Iterator() {
             private int cursor = 0;
 
@@ -60,7 +60,7 @@ public class MyArrayList implements List<String> {
 
             @Override
             public Object next() {
-                String element = elements[cursor];
+                Object element = elements[cursor];
                 cursor++;
                 return element;
             }
@@ -78,13 +78,13 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public boolean add(String str) {
+    public boolean add(E element) {
         ++size;
         if (size >= this.elements.length) {
             elements = grow();
         }
 
-        elements[size - 1] = str;
+        elements[size - 1] = element;
         return true;
     }
 
@@ -112,7 +112,7 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public void add(int index, String str) {
+    public void add(int index, E element) {
         if (index > size || index < 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -128,17 +128,17 @@ public class MyArrayList implements List<String> {
                 elements,
                 index + 1,
                 size - index);
-        elements[index] = str;
+        elements[index] = element;
     }
 
     @Override
-    public String remove(int index) {
+    public E remove(int index) {
 
         if (index > size || index < 0) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        String elementDelete = elements[index];
+        Object elementDelete = elements[index];
         System.arraycopy(elements,
                 index + 1,
                 elements,
@@ -146,7 +146,7 @@ public class MyArrayList implements List<String> {
                 size - index);
 
         size = size - 1;
-        return elementDelete;
+        return (E) elementDelete;
     }
 
     @Override
@@ -174,101 +174,11 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public ListIterator<String> listIterator() {
+    public ListIterator<E> listIterator() {
         return new ListIterator<>() {
             int cursor = 0;
             int sizeItr = size;
-            String[] elementsItr = elements;
-
-            @Override
-            public boolean hasNext() {
-                return cursor < sizeItr - 1;
-            }
-
-            @Override
-            public String next() {
-                int nextCursor = cursor;
-                nextCursor++;
-
-                if(nextCursor < sizeItr){
-                    cursor++;
-                    return elementsItr[cursor - 1];
-                }else{
-                    return elementsItr[cursor];
-                }
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return cursor > 0;
-            }
-
-            @Override
-            public String previous() {
-                int prevCursor = cursor;
-                prevCursor--;
-
-                if(prevCursor <= 0){
-                    prevCursor = 0;
-                }
-
-                cursor = prevCursor;
-                return elementsItr[cursor];
-            }
-
-            @Override
-            public int nextIndex() {
-                int nextIndex = cursor + 1;
-                if (nextIndex >= sizeItr) {
-                    throw new ArrayIndexOutOfBoundsException();
-                }
-                return nextIndex;
-            }
-
-            @Override
-            public int previousIndex() {
-                int preIndex = cursor -1;
-                if (preIndex < 0) {
-                    throw new ArrayIndexOutOfBoundsException();
-                }
-                return preIndex;
-            }
-
-            @Override
-            public void remove() {
-                System.arraycopy(elementsItr,
-                        cursor + 1,
-                        elementsItr,
-                        cursor,
-                        sizeItr - cursor);
-                sizeItr--;
-            }
-
-            @Override
-            public void set(String s) {
-                if(cursor  == sizeItr){
-                    cursor--;
-                }
-                elementsItr[cursor] = s;
-            }
-
-            @Override
-            public void add(String s) {
-                elementsItr[sizeItr] = s;
-                sizeItr++;
-            }
-        };
-    }
-
-    @Override
-    public ListIterator<String> listIterator(int index) {
-        if (index >= size) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        return new ListIterator<>() {
-            int cursor = index;
-            int sizeItr = size;
-            String[] elementsItr = elements;
+            Object[] elementsItr = elements;
 
             @Override
             public boolean hasNext() {
@@ -276,9 +186,9 @@ public class MyArrayList implements List<String> {
             }
 
             @Override
-            public String next() {
+            public E next() {
                 cursor++;
-                return elementsItr[cursor - 1];
+                return (E) elementsItr[cursor - 1];
             }
 
             @Override
@@ -287,9 +197,81 @@ public class MyArrayList implements List<String> {
             }
 
             @Override
-            public String previous() {
+            public E previous() {
                 cursor--;
-                return elementsItr[cursor];
+                return (E) elementsItr[cursor];
+            }
+
+            @Override
+            public int nextIndex() {
+                if (cursor++ >= sizeItr) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public int previousIndex() {
+                if (cursor-- < 0) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                return cursor;
+            }
+
+            @Override
+            public void remove() {
+                if(cursor == 0){
+                    System.arraycopy(elementsItr, cursor + 1, elementsItr, 0, sizeItr - cursor - 1);
+                    sizeItr--;
+                    return;
+                }
+                System.arraycopy(elementsItr, cursor, elementsItr, cursor - 1, sizeItr - cursor - 1);
+                sizeItr--;
+            }
+
+            @Override
+            public void set(Object s) {
+                elementsItr[cursor] = s;
+            }
+
+            @Override
+            public void add(Object s) {
+                elementsItr[sizeItr] = s;
+                sizeItr++;
+            }
+        };
+    }
+
+    @Override
+    public ListIterator<E> listIterator(int index) {
+        if (index >= size) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        return new ListIterator<>() {
+            int cursor = index;
+            int sizeItr = size;
+            Object[] elementsItr = elements;
+
+            @Override
+            public boolean hasNext() {
+                return cursor != sizeItr;
+            }
+
+            @Override
+            public E next() {
+                cursor++;
+                return (E) elementsItr[cursor - 1];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return cursor - 1 > 0;
+            }
+
+            @Override
+            public E previous() {
+                cursor--;
+                return (E) elementsItr[cursor];
             }
 
             @Override
@@ -315,26 +297,26 @@ public class MyArrayList implements List<String> {
             }
 
             @Override
-            public void set(String s) {
-                elementsItr[cursor] = s;
+            public void set(Object o) {
+                elementsItr[cursor] = o;
             }
 
             @Override
-            public void add(String s) {
-                elementsItr[sizeItr] = s;
+            public void add(Object o) {
+                elementsItr[sizeItr] = o;
                 sizeItr++;
             }
         };
     }
 
     @Override
-    public List<String> subList(int fromIndex, int toIndex) {
-        String[] massive = new String[toIndex - fromIndex];
+    public List<E> subList(int fromIndex, int toIndex) {
+        Object[] massive = new Object[toIndex - fromIndex];
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException();
         }
         if (fromIndex == toIndex) {
-            return Arrays.asList(massive);
+            return (List<E>) Arrays.asList(massive);
         }
 
         for (int i = 0; i < massive.length; i++) {
@@ -342,11 +324,11 @@ public class MyArrayList implements List<String> {
             fromIndex++;
         }
 
-        return Arrays.asList(massive);
+        return (List<E>) Arrays.asList(massive);
     }
 
     @Override
-    public boolean addAll(Collection<? extends String> c) {
+    public boolean addAll(Collection<? extends E> c) {
         if (c.isEmpty()) {
             return true;
         }
@@ -355,8 +337,7 @@ public class MyArrayList implements List<String> {
             grow(size + c.size() + 1);
         }
 
-        String[] arr2 = (String[]) c.toArray();
-        System.arraycopy(arr2,
+        System.arraycopy(c.toArray(),
                 0,
                 elements,
                 size,
@@ -366,7 +347,7 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends String> c) {
+    public boolean addAll(int index, Collection<? extends E> c) {
         if (c.isEmpty()) {
             return true;
         }
@@ -375,15 +356,13 @@ public class MyArrayList implements List<String> {
             grow(size + c.size() + 1);
         }
 
-        String[] arr2 = (String[]) c.toArray();
-
         System.arraycopy(elements,
                 index,
                 elements,
                 index + c.size(),
                 size - index);
 
-        System.arraycopy(arr2,
+        System.arraycopy(c,
                 0,
                 elements,
                 index,
@@ -406,12 +385,12 @@ public class MyArrayList implements List<String> {
     }
 
     @Override
-    public String get(int index) {
-        return elements[index];
+    public E get(int index) {
+        return (E) elements[index];
     }
 
     @Override
-    public String set(int index, String element) {
+    public E set(int index, E element) {
         if(index > size - 1){
             throw new ArrayIndexOutOfBoundsException("Meaning out of scope");
         }
@@ -425,8 +404,8 @@ public class MyArrayList implements List<String> {
             return false;
         }
 
-        String[] arrRemove = (String[]) c.toArray();
-        MyArrayList newArList = new MyArrayList();
+        Object[] arrRemove = c.toArray();
+        MyArrayList<E> newArList = new MyArrayList<E>();
         for (int j = 0; j < size; j++) {
             boolean isFound = false;
             for (int i = 0; i < arrRemove.length; i++) {
@@ -436,7 +415,7 @@ public class MyArrayList implements List<String> {
                 }
             }
             if (isFound) {
-                newArList.add(elements[j]);
+                newArList.add((E) elements[j]);
             }
         }
 
@@ -448,11 +427,10 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean removeAll(Collection c) {
-        if (c.size() == 0) {
+        if(c.isEmpty()){
             return false;
         }
-
-        String[] arrRemove = (String[]) c.toArray();
+        Object[] arrRemove = c.toArray();
         for (int i = 0; i < c.size(); i++) {
             remove(arrRemove[i]);
         }
@@ -462,28 +440,27 @@ public class MyArrayList implements List<String> {
 
     @Override
     public boolean containsAll(Collection c) {
-        if (c.size() == 0) {
+        if(c.isEmpty()){
             return false;
         }
-
-        String[] arr = (String[]) c.toArray();
-        for (String str : arr) {
-            if (str == null) {
+        Object[] arr = c.toArray();
+        for (Object o : arr) {
+            if (o == null) {
                 break;
             }
-            if (!this.contains(str)) {
+            if (!this.contains(o)) {
                 return false;
             }
         }
         return true;
     }
 
-    private String[] grow() {
+    private E[] grow() {
         int newSize = getNewSize();
-        return Arrays.copyOf(elements, newSize);
+        return (E[]) Arrays.copyOf(elements, newSize);
     }
 
-    private String[] grow(int newSize) {
+    private Object[] grow(int newSize) {
         return Arrays.copyOf(elements, newSize);
     }
 
