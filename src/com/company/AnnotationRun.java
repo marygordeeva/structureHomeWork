@@ -3,9 +3,9 @@ package com.company;
 import com.company.MyAnnotations.After;
 import com.company.MyAnnotations.Before;
 import com.company.MyAnnotations.Test;
+import com.company.entity.ClassMethods;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,55 +26,22 @@ public class AnnotationRun {
         Method[] methods = testClass.getMethods();
         try {
             var myClass = testClass.newInstance();
-
-            List<Method> after = new LinkedList<>();
-            List<Method> before = new LinkedList<>();
-            List<Method> methodsTests = new LinkedList<>();
+            ClassMethods classTestMethods = new ClassMethods();
 
             for (Method method : methods) {
-                Annotation[] annotations = method.getDeclaredAnnotations();
-
-                if (annotations.length == 0) {
+                if (!haveAnnotation(method)) {
                     continue;
                 }
 
-                Annotation[] typeAnnotated = method.getAnnotationsByType(Before.class);
-                if (typeAnnotated.length != 0) {
-                    before.add(method);
-                }
-
-                Annotation[] typeAnnotatedAfter = method.getAnnotationsByType(After.class);
-                if (typeAnnotatedAfter.length != 0) {
-                    after.add(method);
-                }
-
-                Annotation[] typeAnnotatedTest = method.getAnnotationsByType(Test.class);
-                if (typeAnnotatedTest.length != 0) {
-                    methodsTests.add(method);
-                }
+                fillMethods(classTestMethods, method, Before.class);
+                fillMethods(classTestMethods, method, After.class);
+                fillMethods(classTestMethods, method, Test.class);
             }
-            countTests = methodsTests.size();
-
-            if (countTests == 0) {
+            if (isEmptyListTests(classTestMethods)) {
                 return;
             }
 
-            for (Method method : methodsTests) {
-                try {
-                    if (!before.isEmpty()) {
-                        runMethods(before, myClass);
-                    }
-                    method.invoke(myClass);
-                    successTests++;
-                    if (!after.isEmpty()) {
-                        runMethods(after, myClass);
-                    }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            }
+            executeTests(myClass, classTestMethods);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -83,7 +50,7 @@ public class AnnotationRun {
         failTests = countTests - successTests;
     }
 
-    public static void runTestsObject(String packageName) throws IOException {
+    public static void runTestsFromPackage(String packageName) {
         try {
             List<Class> classes = new LinkedList<>();
             var classLoader = ClassLoader.getSystemClassLoader();
@@ -112,14 +79,66 @@ public class AnnotationRun {
         }
     }
 
-    private static void runMethods(List<Method> methods, Object ob){
-        for (Method method : methods){
+    private static void invokeMethods(List<Method> methods, Object ob) {
+        for (Method method : methods) {
             try {
                 method.invoke(ob);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean isEmptyListTests(ClassMethods methods1) {
+        countTests = methods1.testMethods.size();
+
+        if (countTests == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private static void executeTests(Object myClass, ClassMethods classMethods) {
+
+        for (Method method : classMethods.testMethods) {
+            try {
+                if (!classMethods.beforeMethods.isEmpty()) {
+                    invokeMethods(classMethods.beforeMethods, myClass);
+                }
+                method.invoke(myClass);
+                successTests++;
+                if (!classMethods.afterMethods.isEmpty()) {
+                    invokeMethods(classMethods.afterMethods, myClass);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean haveAnnotation(Method method) {
+        Annotation[] annotations = method.getDeclaredAnnotations();
+
+        if (annotations.length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void fillMethods(ClassMethods methods, Method method, Class clazz) {
+        Annotation[] typeAnnotated = method.getAnnotationsByType(clazz);
+        if (typeAnnotated.length != 0) {
+
+            if (clazz.getName().equals(Before.class)) {
+                methods.beforeMethods.add(method);
+            } else if (clazz.getName().equals(After.class)) {
+                methods.afterMethods.add(method);
+            } else if (clazz.getName().equals(Test.class)) {
+                methods.testMethods.add(method);
             }
         }
     }
