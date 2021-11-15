@@ -136,12 +136,11 @@ public class AnnotationRun {
     private static void fillMethods(ClassMethods methods, Method method, Class clazz) {
         Annotation[] typeAnnotated = method.getAnnotationsByType(clazz);
         if (typeAnnotated.length != 0) {
-
-            if (clazz.getName().equals(Before.class)) {
+            if (clazz.getName().equals(Before.class.getName())) {
                 methods.beforeMethods.add(method);
-            } else if (clazz.getName().equals(After.class)) {
+            } else if (clazz.getName().equals(After.class.getName())) {
                 methods.afterMethods.add(method);
-            } else if (clazz.getName().equals(Test.class)) {
+            } else if (clazz.getName().equals(Test.class.getName())) {
                 methods.testMethods.add(method);
             }
         }
