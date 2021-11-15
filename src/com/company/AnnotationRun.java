@@ -20,9 +20,7 @@ public class AnnotationRun {
     public static int failTests;
 
     public static void runTests(Class testClass) {
-        countTests = 0;
-        successTests = 0;
-        failTests = 0;
+        clearCountTests();
         Method[] methods = testClass.getMethods();
         try {
             var myClass = testClass.newInstance();
@@ -77,6 +75,12 @@ public class AnnotationRun {
         } catch (URISyntaxException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void clearCountTests() {
+        countTests = 0;
+        successTests = 0;
+        failTests = 0;
     }
 
     private static void invokeMethods(List<Method> methods, Object ob) {
