@@ -2,7 +2,6 @@ package com.company;
 
 import com.company.entity.MyArrayList;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Main {
@@ -100,9 +99,9 @@ public class Main {
         System.out.println("result array1.containsAll(array3ContainsAll) = " + isContainsAll2);
         System.out.println("______________________________________________");
 
-        String deleteElement = array3ContainsAll.remove(0);
+//        String deleteElement = array3ContainsAll.remove(0);
         System.out.println("result array3ContainsAll.remove(0) = " + array3ContainsAll);
-        System.out.println("result delete element = " + deleteElement);
+//        System.out.println("result delete element = " + deleteElement);
         System.out.println("______________________________________________");
 
         int index = array3ContainsAll.indexOf("80");
